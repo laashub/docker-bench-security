@@ -47,13 +47,14 @@ usage () {
   -i INCLUDE   optional  Comma delimited list of patterns within a container name to check
   -x EXCLUDE   optional  Comma delimited list of patterns within a container name to exclude from check
   -t TARGET    optional  Comma delimited list of images name to check
+  -n LIMIT     optional  In JSON output, when reporting lists of items (containers, images, etc.), limit the number of reported items to LIMIT. Default 0 (no limit).
 EOF
 }
 
 # Get the flags
 # If you add an option here, please
 # remember to update usage() above.
-while getopts bhl:c:e:i:x:t: args
+while getopts bhl:c:e:i:x:t:n: args
 do
   case $args in
   b) nocolor="nocolor";;
@@ -64,12 +65,17 @@ do
   i) include="$OPTARG" ;;
   x) exclude="$OPTARG" ;;
   t) imgList="$OPTARG" ;;
+  n) limit="$OPTARG" ;;
   *) usage; exit 1 ;;
   esac
 done
 
 if [ -z "$logger" ]; then
   logger="${myname}.log"
+fi
+
+if [ -z "$limit" ]; then
+  limit=0
 fi
 
 # Load output formating
